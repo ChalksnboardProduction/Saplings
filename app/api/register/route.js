@@ -1,10 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
+import pool from "@/lib/db";
 import { NextResponse } from "next/server";
-
-// Initialize Supabase Client (Server-Side)
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-key";
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function POST(request) {
     try {
@@ -18,29 +13,20 @@ export async function POST(request) {
             address
         } = body;
 
-        // Insert data into Supabase
-        const { data, error } = await supabase
-            .from('students')
-            .insert([
-                {
-                    student_name: studentName,
-                    class: studentClass,
-                    parent_name: parentName,
-                    phone: phone,
-                    email: email,
-                    address: address
-                },
-            ])
-            .select();
+        // Insert data into PostgreSQL
+        const query = `
+            INSERT INTO students (student_name, class, parent_name, phone, email, address)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *
+        `;
 
-        if (error) {
-            console.error("Supabase Insert Error:", error);
-            throw error;
-        }
+        const values = [studentName, studentClass, parentName, phone, email, address];
 
-        return NextResponse.json({ success: true, message: "Registration saved successfully!" });
+        const { rows } = await pool.query(query, values);
+
+        return NextResponse.json({ success: true, message: "Registration saved successfully!", data: rows[0] });
     } catch (error) {
-        console.error("Server Error:", error);
+        console.error("Database Error:", error);
         return NextResponse.json(
             { error: "Failed to save data. Please try again." },
             { status: 500 }

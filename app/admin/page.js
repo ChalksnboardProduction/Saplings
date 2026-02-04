@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+
 import Header from "@/components/Header";
 
 export default function AdminPanel() {
@@ -13,13 +13,10 @@ export default function AdminPanel() {
 
     async function fetchStudents() {
         try {
-            const { data, error } = await supabase
-                .from('students')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (error) console.error('Error fetching students:', error);
-            if (data) setStudents(data);
+            const res = await fetch('/api/students');
+            if (!res.ok) throw new Error('Failed to fetch data');
+            const data = await res.json();
+            setStudents(data);
         } catch (error) {
             console.error('Error:', error);
         } finally {
