@@ -16,24 +16,27 @@ This guide details how to manually set up your environment on AWS EC2 to run the
 ssh -i "path\to\your-key.pem" ubuntu@your-ec2-ip
 ```
 
-## Step 3: Install Node.js (v18+)
-Run these commands on the server:
+## Step 3: Install Node.js (v20+)
+Run these commands on the server to install Node.js 20:
 
 ```bash
-# Download and install Node.js 18
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+# Download and install Node.js 20
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 # Verify installation
 node -v
-npm -v
+# Should output v20.x.x
 ```
 
-## Step 4: Install & Configure PostgreSQL
+## Step 4: Install & Configure PostgreSQL (Amazon Linux 2023)
 ```bash
-# Install Postgres
-sudo apt-get update
-sudo apt-get install -y postgresql postgresql-contrib
+# Install Postgres 15
+sudo dnf update -y
+sudo dnf install -y postgresql15 postgresql15-server
+
+# Initialize DB
+sudo /usr/bin/postgresql-setup --initdb
 
 # Start the service
 sudo systemctl start postgresql
@@ -69,6 +72,22 @@ scp -i "key.pem" -r . ubuntu@your-ec2-ip:~/app
 
 ## Step 6: Install Dependencies & Build
 Back on the **server**:
+
+**IMPORTANT: Fix for "Build Failed" / Out of Memory**
+If you are using a Free Tier instance (t2.micro/t3.micro), `npm run build` will likely fail due to low memory. **Run these commands first to create a Swap file:**
+
+```bash
+# Create a 4GB swap file
+sudo fallocate -l 4G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+
+# Make it permanent
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+```
+
+Now you can build:
 
 ```bash
 cd ~/app
@@ -122,5 +141,25 @@ Go to `http://your-ec2-ip:3000`.
 ---
 **Troubleshooting**
 -   **App not loading?** Check Security Group (Step 1).
--   **Database error?** Check `.env.production` contains the correct password.
 -   **Logs?** Run `pm2 logs venkteshwar`.
+
+**Fix: "FATAL: Ident authentication failed"**
+If you see this error, PostgreSQL is trying to use your Linux username instead of the password.
+1.  Edit the config:
+    ```bash
+    sudo nano /var/lib/pgsql/data/pg_hba.conf
+    ```
+2.  Scroll down to the bottom. Find lines like this:
+    ```
+    host    all             all             127.0.0.1/32            ident
+    host    all             all             ::1/128                 ident
+    ```
+3.  Change `ident` to `md5` (or `scram-sha-256`):
+    ```
+    host    all             all             127.0.0.1/32            md5
+    host    all             all             ::1/128                 md5
+    ```
+4.  Save (`Ctrl+O`, `Enter`, `Ctrl+X`) and restart:
+    ```bash
+    sudo systemctl restart postgresql
+    ```
