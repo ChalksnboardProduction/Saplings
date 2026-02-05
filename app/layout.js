@@ -12,8 +12,11 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: "Venkteshwar - Modern Web Experience",
-  description: "A premium Next.js application with Tailwind CSS",
+  title: "The Venkateshwar School - Admission Enquiry",
+  description: "Admission Enquiry Portal for The Venkateshwar School",
+  icons: {
+    icon: "/download.png",
+  },
 };
 
 export default function RootLayout({ children }) {
