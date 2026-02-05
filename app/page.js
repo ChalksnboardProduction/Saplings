@@ -71,7 +71,7 @@ export default function Home() {
       {/* Banner Section - Full Width */}
       <div className="w-full relative mt-24">
         <Image
-          src="/banner-new.jpg"
+          src="/banner-new.JPG"
           alt="School Banner"
           width={1920}
           height={600}
