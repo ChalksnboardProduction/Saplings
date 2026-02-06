@@ -45,8 +45,8 @@ export async function POST(request) {
         const params = {
             mercid: merchantId,
             orderid: orderId,
-            currency: '356', // INR
-            isocode: 'IND',
+            currency: 'INR', // INR
+            isocode: 'INR',
             amount: '1.00', // Ensure 2 decimal places
 
             // Standard Airpay often expects these specific keys
