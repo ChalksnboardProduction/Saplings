@@ -36,25 +36,35 @@ export async function POST(request) {
         // Note: The specific fields required by Airpay might vary slightly based on the kit.
         // We follow standard fields found in general documentation.
 
+        // Sanitize Phone (remove spaces, +91, etc. - keep last 10 digits)
+        let phoneClean = student.phone.replace(/\D/g, '');
+        if (phoneClean.length > 10) {
+            phoneClean = phoneClean.substring(phoneClean.length - 10);
+        }
+
         const params = {
             mercid: merchantId,
             orderid: orderId,
             currency: '356', // INR
             isocode: 'IND',
-            amount: '1.00',
+            amount: '1.00', // Ensure 2 decimal places
+
+            // Standard Airpay often expects these specific keys
             email: student.email,
-            phone: student.phone,
-            firstname: student.student_name.split(' ')[0],
-            lastname: student.student_name.split(' ').slice(1).join(' ') || '.',
-            buyeraddress: student.address,
-            buyerstate: 'Haryana', // Defaulting or should be in form
-            buyercity: 'Gurgaon', // Defaulting or should be in form
-            buyerpincode: '122011',
-            buyerphone: student.phone,
-            buyeremail: student.email,
-            customvar: studentId, // Passing student ID for ref
-            chmod: '', // Hidden Mode
-            privatekey: '', // Will be calculated
+            phone: phoneClean,
+            buyerEmail: student.email,
+            buyerPhone: phoneClean,
+            buyerFirstName: student.student_name.split(' ')[0],
+            buyerLastName: student.student_name.split(' ').slice(1).join(' ') || '.',
+            buyerAddress: student.address,
+            buyerCity: 'Gurgaon',
+            buyerState: 'Haryana',
+            buyerCountry: 'India',
+            buyerPinCode: '122011',
+
+            customvar: studentId,
+            chmod: '',
+            privatekey: '',
             mer_dom: '',
         };
 

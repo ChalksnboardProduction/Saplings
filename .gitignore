@@ -35,7 +35,7 @@ yarn-error.log*
 
 # vercel
 .vercel
-.DEPLOYMENT.md
+/.DEPLOYMENT.md
 # typescript
 *.tsbuildinfo
 next-env.d.ts
@@ -59,4 +59,6 @@ sb_publishable_d-zCr5BBiABWTwMMqz8T4g_S9T8QX-j
 Copy
 This key is safe to use in a browser if you have enabled Row Level Security (RLS) for your tables and configured policies. You may also use the secret key which can be found here to bypass RLS.
 
-
+# deployment docs
+COMPLETE_DEPLOYMENT_GUIDE.md
+DEPLOYMENT.md
