@@ -1,165 +1,177 @@
-# Manual Deployment to AWS EC2 (No Docker)
+# Complete Manual Deployment Guide (Amazon Linux 2023)
 
-This guide details how to manually set up your environment on AWS EC2 to run the Next.js application and PostgreSQL database.
+**Project:** Venkteshwar School CRM
+**Server IP:** `43.205.137.221`
+**Domain:** `admissionenquirycnb.thevenkateshwarschool.com`
 
-## Prerequisites
--   An AWS Account.
--   SSH access to your instance.
+---
 
-## Step 1: Launch an EC2 Instance
-*(Same as before)*
-1.  Launch an **Ubuntu Server 24.04 LTS** instance.
-2.  Configure Security Group to allow **Port 3000** (Custom TCP) and **Port 22** (SSH).
+## Phase 1: Server Setup (One-Time)
 
-## Step 2: Connect to your Instance
-```powershell
-ssh -i "path\to\your-key.pem" ubuntu@your-ec2-ip
-```
+Run these commands on your **EC2 Terminal** to prepare the system.
 
-## Step 3: Install Node.js (v20+)
-Run these commands on the server to install Node.js 20:
-
+### 1. Update & Install Node.js v20
 ```bash
-# Download and install Node.js 20
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt-get install -y nodejs
-
-# Verify installation
-node -v
-# Should output v20.x.x
-```
-
-## Step 4: Install & Configure PostgreSQL (Amazon Linux 2023)
-```bash
-# Install Postgres 15
 sudo dnf update -y
-sudo dnf install -y postgresql15 postgresql15-server
+sudo dnf install -y git
+# Install Node Version Manager (Fastest way to get Node 20)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+source ~/.bashrc
+nvm install 20
+nvm use 20
+```
 
-# Initialize DB
-sudo /usr/bin/postgresql-setup --initdb
-
-# Start the service
+### 2. Install PostgreSQL
+```bash
+sudo dnf install -y postgresql15-server
+sudo postgresql-setup --initdb
 sudo systemctl start postgresql
 sudo systemctl enable postgresql
-
-# Create a database user and db
-sudo -u postgres psql
 ```
 
-Inside the `psql` shell, run:
-```sql
--- Create User
+### 3. Key Fix: Allow Password Authentication
+By default, Postgres fails with "Ident authentication failed". Fix it now:
+```bash
+# Force replace 'ident' with 'md5' in config
+sudo sed -i 's/ident/md5/g' /var/lib/pgsql/data/pg_hba.conf
+sudo systemctl restart postgresql
+```
+
+### 4. Setup Database User & Schema
+```bash
+# Switch to postgres user
+sudo -u postgres psql
+
+# Run these SQL commands inside the prompt:
 CREATE USER myuser WITH PASSWORD 'mypassword';
-
--- Create Database
 CREATE DATABASE venkteshwar;
-
--- Grant privileges
 GRANT ALL PRIVILEGES ON DATABASE venkteshwar TO myuser;
 ALTER DATABASE venkteshwar OWNER TO myuser;
-
--- Verify & Exit
-\l
 \q
 ```
 
-## Step 5: Upload Project Files
-From your **local machine**, copy the files:
-```powershell
-scp -i "key.pem" -r . ubuntu@your-ec2-ip:~/app
-```
-*(Ideally, exclude `node_modules` and `.next` folders to save time).*
-
-## Step 6: Install Dependencies & Build
-Back on the **server**:
-
-**IMPORTANT: Fix for "Build Failed" / Out of Memory**
-If you are using a Free Tier instance (t2.micro/t3.micro), `npm run build` will likely fail due to low memory. **Run these commands first to create a Swap file:**
-
+### 5. Create Swap File (Prevent Out of Memory)
+Even for running the app, extra memory is safe.
 ```bash
-# Create a 4GB swap file
 sudo fallocate -l 4G /swapfile
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
-
-# Make it permanent
-echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 ```
 
-Now you can build:
+---
 
+## Phase 2: Application Setup
+
+### 1. Download Code
 ```bash
-cd ~/app
-
-# Install dependencies
+git clone https://github.com/prannnjal/venketeshwar.git
+cd venketeshwar
 npm install
-
-# Create production build
-npm run build
 ```
 
-## Step 7: Configure Environment Variables
-Create a `.env.production` file:
+### 2. Configure Environment
+Create the production config:
 ```bash
 nano .env.production
 ```
-Paste this content (update password if changed):
+Paste this inside:
 ```env
-DATABASE_URL=postgresql://myuser:mypassword@localhost:5432/venkteshwar
-NODE_ENV=production
+DATABASE_URL="postgresql://myuser:mypassword@localhost:5432/venkteshwar"
+NODE_ENV="production"
 ```
-Save: `Ctrl+O`, `Enter`, `Ctrl+X`.
 
-## Step 8: Initialize Database Table
-We need to create the `students` table. We can run the `init.sql` script manually:
-
+### 3. Initialize Database Tables
 ```bash
-# Login to your DB
 psql "postgresql://myuser:mypassword@localhost:5432/venkteshwar" -f init.sql
 ```
 
-## Step 9: Start App with PM2
-PM2 is a process manager that keeps your app alive.
+---
 
+## Phase 3: Build & Deploy (The "Local Build" Strategy)
+
+Since the EC2 instance is small, we build on Windows and upload.
+
+### 1. On Windows (Local PC)
+Open VS Code terminal:
+```powershell
+# Build the project
+npm run build
+
+# Upload the .next folder to EC2
+# (Replace Path-to-Key with your actual .pem file path)
+scp -i "Path-to-Key.pem" -r .next ec2-user@43.205.137.221:~/venketeshwar/.next
+```
+
+### 2. On EC2 (Server)
+Start the app with PM2:
 ```bash
-# Install PM2 globally
-sudo npm install -g pm2
+# Install PM2
+npm install -g pm2
 
-# Start the app
+# Start the App
 pm2 start npm --name "venkteshwar" -- start
 
-# Save process list so it restarts on reboot
+# Save for Reboot
 pm2 save
 pm2 startup
+# (Run the command output by the line above)
 ```
-*(Run the command output by `pm2 startup` if asked)*
-
-## Step 10: Access the App
-Go to `http://your-ec2-ip:3000`.
 
 ---
-**Troubleshooting**
--   **App not loading?** Check Security Group (Step 1).
--   **Logs?** Run `pm2 logs venkteshwar`.
 
-**Fix: "FATAL: Ident authentication failed"**
-If you see this error, PostgreSQL is trying to use your Linux username instead of the password.
-1.  Edit the config:
-    ```bash
-    sudo nano /var/lib/pgsql/data/pg_hba.conf
-    ```
-2.  Scroll down to the bottom. Find lines like this:
-    ```
-    host    all             all             127.0.0.1/32            ident
-    host    all             all             ::1/128                 ident
-    ```
-3.  Change `ident` to `md5` (or `scram-sha-256`):
-    ```
-    host    all             all             127.0.0.1/32            md5
-    host    all             all             ::1/128                 md5
-    ```
-4.  Save (`Ctrl+O`, `Enter`, `Ctrl+X`) and restart:
-    ```bash
-    sudo systemctl restart postgresql
-    ```
+## Phase 4: Domain & HTTPS (SSL)
+
+### 1. DNS Setup (GoDaddy/Cloudflare)
+Create an **A Record**:
+- **Name:** `admissionenquirycnb`
+- **Value:** `43.205.137.221`
+
+### 2. Install Nginx & Certbot
+```bash
+sudo dnf install -y nginx certbot python3-certbot-nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+```
+
+### 3. Configure Nginx
+Create the config file:
+```bash
+sudo nano /etc/nginx/conf.d/venkteshwar.conf
+```
+Paste this content:
+```nginx
+server {
+    listen 80;
+    server_name admissionenquirycnb.thevenkateshwarschool.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+### 4. Enable HTTPS
+```bash
+# Verify config
+sudo nginx -t
+sudo systemctl restart nginx
+
+# Generate SSL Cert
+sudo certbot --nginx -d admissionenquirycnb.thevenkateshwarschool.com
+```
+
+---
+
+## Cheat Sheet: Common Updates using Local Build
+
+If you change code (e.g. `page.js`), follow these 3 steps to update the live site:
+
+1.  **Windows**: `npm run build`
+2.  **Windows**: `scp -i keyring.pem -r .next ec2-user@IP:~/venketeshwar/.next`
+3.  **EC2**: `pm2 restart venkteshwar`

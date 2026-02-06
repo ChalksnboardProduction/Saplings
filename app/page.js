@@ -27,6 +27,7 @@ export default function Home() {
     setMessage("");
 
     try {
+      // 1. Register Student
       const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -43,16 +44,45 @@ export default function Home() {
       const data = await res.json();
 
       if (res.ok) {
-        setStatus("success");
-        setMessage("Application submitted successfully!");
-        setFormData({
-          studentName: "",
-          class: "",
-          parentName: "",
-          phone: "",
-          email: "",
-          address: ""
-        });
+        // 2. Initiate Payment
+        try {
+          const payRes = await fetch("/api/payment/initiate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ studentId: data.data.id }) // Assuming API returns 'data' which allows access to 'id'
+          });
+
+          const payData = await payRes.json();
+
+          if (payData.success) {
+            // Auto-submit form to Airpay
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = payData.action;
+
+            // Add all params as hidden fields
+            for (const key in payData.params) {
+              const input = document.createElement('input');
+              input.type = 'hidden';
+              input.name = key;
+              input.value = payData.params[key];
+              form.appendChild(input);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+
+            setStatus("loading"); // Keep loading while redirecting
+            setMessage("Redirecting to payment gateway...");
+          } else {
+            setStatus("error");
+            setMessage(payData.error || "Payment initiation failed.");
+          }
+        } catch (payError) {
+          console.error("Payment Error:", payError);
+          setStatus("error");
+          setMessage("Failed to initiate payment. Please contact support.");
+        }
       } else {
         setStatus("error");
         setMessage(data.error || "Something went wrong.");
