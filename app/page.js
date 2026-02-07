@@ -26,6 +26,20 @@ export default function Home() {
     setStatus("loading");
     setMessage("");
 
+    // Validation
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      setStatus("error");
+      setMessage("Phone number must be exactly 10 digits.");
+      return;
+    }
+
+    if (!formData.email.includes('@') || !formData.email.includes('.')) {
+      setStatus("error");
+      setMessage("Please enter a valid email address containing '@' and '.'");
+      return;
+    }
+
     try {
       // 1. Register Student
       const res = await fetch("/api/register", {
@@ -250,7 +264,10 @@ export default function Home() {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        placeholder="+91 98765 43210"
+                        placeholder="9876543210"
+                        maxLength={10}
+                        pattern="\d{10}"
+                        title="Phone number must be exactly 10 digits"
                         className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none transition-all placeholder:text-gray-400 text-gray-900"
                         required
                       />
