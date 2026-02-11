@@ -58,45 +58,15 @@ export default function Home() {
       const data = await res.json();
 
       if (res.ok) {
-        // 2. Initiate Payment
-        try {
-          const payRes = await fetch("/api/payment/initiate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ studentId: data.data.id }) // Assuming API returns 'data' which allows access to 'id'
-          });
-
-          const payData = await payRes.json();
-
-          if (payData.success) {
-            // Auto-submit form to Airpay
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = payData.action;
-
-            // Add all params as hidden fields
-            for (const key in payData.params) {
-              const input = document.createElement('input');
-              input.type = 'hidden';
-              input.name = key;
-              input.value = payData.params[key];
-              form.appendChild(input);
-            }
-
-            document.body.appendChild(form);
-            form.submit();
-
-            setStatus("loading"); // Keep loading while redirecting
-            setMessage("Redirecting to payment gateway...");
-          } else {
-            setStatus("error");
-            setMessage(payData.error || "Payment initiation failed.");
-          }
-        } catch (payError) {
-          console.error("Payment Error:", payError);
-          setStatus("error");
-          setMessage("Failed to initiate payment. Please contact support.");
-        }
+        setStatus("success");
+        setFormData({
+          studentName: "",
+          class: "",
+          parentName: "",
+          phone: "",
+          email: "",
+          address: ""
+        });
       } else {
         setStatus("error");
         setMessage(data.error || "Something went wrong.");
@@ -138,13 +108,13 @@ export default function Home() {
             <div className="space-y-4 text-gray-700 leading-relaxed text-sm lg:text-base text-justify">
               <h2 className="text-3xl font-bold text-[#081349] mb-4">Admission Process</h2>
               <p>
-                We are delighted that you are considering The Venkateshwar School as the ideal CBSE school in Delhi for your child’s educational journey. Our admission process is thoughtfully structured to welcome students who resonate with our core values, contribute positively to our inclusive school culture, and demonstrate a genuine curiosity for learning. We look forward to partnering with you on this important journey.
+                We are delighted that you are considering GD Goenka Public School, Dhanbad as the ideal CBSE school in Dhanbad for your child’s educational journey. Our admission process is thoughtfully structured to welcome students who resonate with our core values, contribute positively to our inclusive school culture, and demonstrate a genuine curiosity for learning. We look forward to partnering with you on this important journey.
               </p>
               <p>
-                To begin the admission process, we invite parents to submit an online inquiry through our website. The easy-to-navigate inquiry form serves as the first step toward securing admission at one of Delhi’s leading CBSE schools.
+                To begin the admission process, we invite parents to submit an online inquiry through our website. The easy-to-navigate inquiry form serves as the first step toward securing admission at one of Dhanbad’s leading CBSE schools.
               </p>
               <p>
-                Parents are warmly encouraged to visit our campus for a guided school tour. This visit offers a firsthand experience of our state-of-the-art facilities, academic environment, and the vibrant culture that defines life at The Venkateshwar School. Experiencing the campus in person helps families better understand our educational philosophy.
+                Parents are warmly encouraged to visit our campus for a guided school tour. This visit offers a firsthand experience of our state-of-the-art facilities, academic environment, and the vibrant culture that defines life at GD Goenka Public School, Dhanbad. Experiencing the campus in person helps families better understand our educational philosophy.
               </p>
               <p>
                 After the successful submission of the online inquiry form, parents will receive an email containing a link to the detailed admission application. We request that all information regarding the student and family be filled in accurately and completely. Mandatory documents such as the child’s birth certificate, previous academic records, and relevant medical details must be uploaded as part of the application process.
@@ -169,7 +139,7 @@ export default function Home() {
                   Student Registration
                 </h1>
                 <p className="text-gray-200">
-                  Join The Venkateshwar School family. Please fill out the details below.
+                  Join GD Goenka Public School, Dhanbad family. Please fill out the details below.
                 </p>
               </div>
 
@@ -340,15 +310,15 @@ export default function Home() {
           <div className="mb-8 text-center">
             <h3 className="text-2xl font-bold text-[#081349] mb-2">Experience Excellence</h3>
             <p className="text-gray-600">
-              Discover what makes The Venkateshwar School a premier institution for your child's holistic development.
+              Discover what makes GD Goenka Public School, Dhanbad a premier institution for your child's holistic development.
             </p>
           </div>
           <div className="rounded-2xl overflow-hidden shadow-2xl border-4 border-[#081349] aspect-video w-full">
             <iframe
               width="100%"
               height="100%"
-              src="https://www.youtube.com/embed/BZDyTp5xUhg?autoplay=1&mute=0&controls=0&rel=0&modestbranding=1&loop=1&playlist=BZDyTp5xUhg&showinfo=0"
-              title="The Venkateshwar School Video"
+              src="https://www.youtube.com/embed/s8BJYEB9wRU?autoplay=1&mute=0&controls=0&rel=0&modestbranding=1&loop=1&playlist=s8BJYEB9wRU&showinfo=0"
+              title="GD Goenka Public School, Dhanbad Video"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen

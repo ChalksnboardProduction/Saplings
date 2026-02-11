@@ -13,8 +13,8 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: "The Venkateshwar School - Admission Enquiry",
-  description: "Admission Enquiry Portal for The Venkateshwar School",
+  title: "GD Goenka Public School, Dhanbad - Admission Enquiry",
+  description: "Admission Enquiry Portal for GD Goenka Public School, Dhanbad",
   icons: {
     icon: "/download.png",
   },
