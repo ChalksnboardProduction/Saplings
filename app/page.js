@@ -105,6 +105,17 @@ export default function Home() {
           {/* Left Side - Video */}
           {/* Left Side - Admission Text */}
           <div className="flex flex-col h-full pt-0">
+            {/* Video Player */}
+            <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-lg mb-8 bg-gray-100">
+              <iframe
+                className="absolute top-0 left-0 w-full h-full"
+                src="https://www.youtube.com/embed/s8BJYEB9wRU?autoplay=1&mute=1&loop=1&playlist=s8BJYEB9wRU"
+                title="GD Goenka School Video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+
             <div className="space-y-4 text-gray-700 leading-relaxed text-sm lg:text-base text-justify">
               <h2 className="text-3xl font-bold text-[#081349] mb-4">Admission Process</h2>
               <p>
