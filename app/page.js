@@ -92,10 +92,12 @@ export default function Home() {
           className="w-full h-auto object-cover"
           priority
         />
-        <div className="absolute inset-0 flex items-center justify-start pl-4 md:pl-8 lg:pl-12 bg-black/20">
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white uppercase tracking-wider drop-shadow-xl text-left">
-            Admission Open
-          </h2>
+        <div className="absolute inset-0 flex items-center justify-start pl-4 sm:pl-6 md:pl-16 bg-black/30">
+          <div className="w-[50%] sm:w-auto">
+            <h2 className="text-xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white uppercase tracking-wider drop-shadow-2xl text-left leading-tight">
+              Admission Open
+            </h2>
+          </div>
         </div>
       </div>
 
@@ -105,17 +107,6 @@ export default function Home() {
           {/* Left Side - Video */}
           {/* Left Side - Admission Text */}
           <div className="flex flex-col h-full pt-0">
-            {/* Video Player */}
-            <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-lg mb-8 bg-gray-100">
-              <iframe
-                className="absolute top-0 left-0 w-full h-full"
-                src="https://www.youtube.com/embed/s8BJYEB9wRU?autoplay=1&mute=1&loop=1&playlist=s8BJYEB9wRU"
-                title="GD Goenka School Video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
-
             <div className="space-y-4 text-gray-700 leading-relaxed text-sm lg:text-base text-justify">
               <h2 className="text-3xl font-bold text-[#081349] mb-4">Admission Process</h2>
               <p>
@@ -328,7 +319,7 @@ export default function Home() {
             <iframe
               width="100%"
               height="100%"
-              src="https://www.youtube.com/embed/s8BJYEB9wRU?autoplay=1&mute=0&controls=0&rel=0&modestbranding=1&loop=1&playlist=s8BJYEB9wRU&showinfo=0"
+              src="https://www.youtube.com/embed/A6qT89_uFJ8?autoplay=1&mute=1&loop=1&playlist=A6qT89_uFJ8"
               title="GD Goenka Public School, Dhanbad Video"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

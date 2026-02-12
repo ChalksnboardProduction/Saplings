@@ -1,15 +1,34 @@
 "use client";
 import { useEffect, useState } from "react";
-
 import Header from "@/components/Header";
 
 export default function AdminPanel() {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [credentials, setCredentials] = useState({ username: '', password: '' });
+    const [error, setError] = useState('');
+
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchStudents();
-    }, []);
+        if (isAuthenticated) {
+            fetchStudents();
+        }
+    }, [isAuthenticated]);
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        if (credentials.username === 'cnbadmin' && credentials.password === 'Cnb@123') {
+            setIsAuthenticated(true);
+            setError('');
+        } else {
+            setError('Invalid credentials');
+        }
+    };
+
+    const handleChange = (e) => {
+        setCredentials({ ...credentials, [e.target.name]: e.target.value });
+    };
 
     async function fetchStudents() {
         try {
@@ -24,6 +43,61 @@ export default function AdminPanel() {
         }
     }
 
+    if (!isAuthenticated) {
+        return (
+            <div className="flex flex-col min-h-screen bg-gray-50">
+                <Header />
+                <div className="flex-grow flex items-center justify-center px-4">
+                    <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+                        <div className="text-center mb-8">
+                            <h1 className="text-2xl font-bold text-[#081349]">Admin Login</h1>
+                            <p className="text-gray-500 text-sm mt-2">Please enter your credentials</p>
+                        </div>
+
+                        <form onSubmit={handleLogin} className="space-y-6">
+                            {error && (
+                                <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100 text-center">
+                                    {error}
+                                </div>
+                            )}
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                                <input
+                                    type="text"
+                                    name="username"
+                                    value={credentials.username}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    value={credentials.password}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all"
+                                    required
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="w-full py-3 bg-[#081349] hover:bg-[#0a185c] text-white font-semibold rounded-lg shadow-md transition-colors"
+                            >
+                                Login
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col min-h-screen bg-gray-50">
             <Header />
@@ -32,8 +106,16 @@ export default function AdminPanel() {
                 <div className="max-w-7xl mx-auto">
                     <div className="flex justify-between items-center mb-8">
                         <h1 className="font-heading text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-                        <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200 text-sm font-medium text-gray-600">
-                            Total Registrations: {students.length}
+                        <div className="flex items-center gap-4">
+                            <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200 text-sm font-medium text-gray-600">
+                                Total Registrations: {students.length}
+                            </div>
+                            <button
+                                onClick={() => setIsAuthenticated(false)}
+                                className="text-sm text-red-600 hover:text-red-700 font-medium"
+                            >
+                                Logout
+                            </button>
                         </div>
                     </div>
 
