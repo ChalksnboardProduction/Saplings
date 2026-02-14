@@ -13,8 +13,8 @@ export default function Header() {
                 >
                     <div className="relative h-full w-48 md:w-96 overflow-hidden rounded-lg">
                         <Image
-                            src="/1760247108A7119.png"
-                            alt="GD Goenka Public School, Dhanbad Logo"
+                            src="/sapling-logo.webp"
+                            alt="Saplings Logo"
                             fill
                             className="object-contain"
                             priority

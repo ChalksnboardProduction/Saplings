@@ -13,10 +13,10 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: "GD Goenka Public School, Dhanbad - Admission Enquiry",
-  description: "Admission Enquiry Portal for GD Goenka Public School, Dhanbad",
+  title: "Saplings International Primary School - Admission Enquiry",
+  description: "Admission Enquiry Portal for Saplings International Primary School",
   icons: {
-    icon: "/download.png",
+    icon: "/download.jpg",
   },
 };
 

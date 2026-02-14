@@ -85,7 +85,7 @@ export default function Home() {
       {/* Banner Section - Full Width */}
       <div className="w-full relative mt-16 md:mt-24">
         <Image
-          src="/gd_goenka_banner_3.jpg"
+          src="/3.png"
           alt="School Banner"
           width={1920}
           height={600}
@@ -110,13 +110,13 @@ export default function Home() {
             <div className="space-y-4 text-gray-700 leading-relaxed text-sm lg:text-base text-justify">
               <h2 className="text-3xl font-bold text-[#081349] mb-4">Admission Process</h2>
               <p>
-                We are delighted that you are considering GD Goenka Public School, Dhanbad as the ideal CBSE school in Dhanbad for your child’s educational journey. Our admission process is thoughtfully structured to welcome students who resonate with our core values, contribute positively to our inclusive school culture, and demonstrate a genuine curiosity for learning. We look forward to partnering with you on this important journey.
+                We are delighted that you are considering Saplings International Primary School as the ideal International Primary School for your child’s educational journey. Our admission process is thoughtfully structured to welcome students who resonate with our core values, contribute positively to our inclusive school culture, and demonstrate a genuine curiosity for learning. We look forward to partnering with you on this important journey.
               </p>
               <p>
-                To begin the admission process, we invite parents to submit an online inquiry through our website. The easy-to-navigate inquiry form serves as the first step toward securing admission at one of Dhanbad’s leading CBSE schools.
+                To begin the admission process, we invite parents to submit an online inquiry through our website. The easy-to-navigate inquiry form serves as the first step toward securing admission at one of the leading International Primary Schools.
               </p>
               <p>
-                Parents are warmly encouraged to visit our campus for a guided school tour. This visit offers a firsthand experience of our state-of-the-art facilities, academic environment, and the vibrant culture that defines life at GD Goenka Public School, Dhanbad. Experiencing the campus in person helps families better understand our educational philosophy.
+                Parents are warmly encouraged to visit our campus for a guided school tour. This visit offers a firsthand experience of our state-of-the-art facilities, academic environment, and the vibrant culture that defines life at Saplings International Primary School. Experiencing the campus in person helps families better understand our educational philosophy.
               </p>
               <p>
                 After the successful submission of the online inquiry form, parents will receive an email containing a link to the detailed admission application. We request that all information regarding the student and family be filled in accurately and completely. Mandatory documents such as the child’s birth certificate, previous academic records, and relevant medical details must be uploaded as part of the application process.
@@ -141,7 +141,7 @@ export default function Home() {
                   Student Registration
                 </h1>
                 <p className="text-gray-200">
-                  Join GD Goenka Public School, Dhanbad family. Please fill out the details below.
+                  Join Saplings International Primary School family. Please fill out the details below.
                 </p>
               </div>
 
@@ -195,18 +195,15 @@ export default function Home() {
                         required
                       >
                         <option value="" disabled>Select Class</option>
+                        <option value="play_group">Play Group</option>
                         <option value="nursery">Nursery</option>
-                        <option value="kg">KG</option>
+                        <option value="lkg">LKG</option>
+                        <option value="ukg">UKG</option>
                         <option value="1">Class 1</option>
                         <option value="2">Class 2</option>
                         <option value="3">Class 3</option>
                         <option value="4">Class 4</option>
                         <option value="5">Class 5</option>
-                        <option value="6">Class 6</option>
-                        <option value="7">Class 7</option>
-                        <option value="8">Class 8</option>
-                        <option value="9">Class 9</option>
-                        <option value="11">Class 11</option>
                       </select>
                     </div>
                   </div>
@@ -312,15 +309,15 @@ export default function Home() {
           <div className="mb-8 text-center">
             <h3 className="text-2xl font-bold text-[#081349] mb-2">Experience Excellence</h3>
             <p className="text-gray-600">
-              Discover what makes GD Goenka Public School, Dhanbad a premier institution for your child's holistic development.
+              Discover what makes Saplings International Primary School a premier institution for your child's holistic development.
             </p>
           </div>
           <div className="rounded-2xl overflow-hidden shadow-2xl border-4 border-[#081349] aspect-video w-full">
             <iframe
               width="100%"
               height="100%"
-              src="https://www.youtube.com/embed/A6qT89_uFJ8?autoplay=1&mute=1&loop=1&playlist=A6qT89_uFJ8"
-              title="GD Goenka Public School, Dhanbad Video"
+              src="https://www.youtube.com/embed/OVp6E1OWLwY?autoplay=1&mute=1&loop=1&playlist=OVp6E1OWLwY"
+              title="Saplings International Primary School Video"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
