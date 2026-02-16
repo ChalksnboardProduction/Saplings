@@ -107,7 +107,7 @@ Paste this content (Replace `your-domain.com` with your actual domain):
 ```nginx
 server {
     listen 80;
-    server_name admissionenquirycnb.saplingsspv.com;
+    server_name admissionenquirycnb.saplingspv.com;
 
     location / {
         proxy_pass http://localhost:3002; # Pointing to Port 3002
