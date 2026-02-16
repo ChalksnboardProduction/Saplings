@@ -6,7 +6,7 @@ export default function Header() {
         <header className="fixed top-0 w-full z-50 border-b border-gray-100 bg-white">
             <div className="wrapper h-16 md:h-24 flex items-center justify-start">
                 <Link
-                    href="https://www.gdgoenkadhanbad.in/"
+                    href="https://www.saplingspv.com/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 group h-full"
