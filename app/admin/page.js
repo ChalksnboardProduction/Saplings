@@ -8,11 +8,13 @@ export default function AdminPanel() {
     const [error, setError] = useState('');
 
     const [students, setStudents] = useState([]);
+    const [visitCount, setVisitCount] = useState(0);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (isAuthenticated) {
             fetchStudents();
+            fetchVisitCount();
         }
     }, [isAuthenticated]);
 
@@ -40,6 +42,18 @@ export default function AdminPanel() {
             console.error('Error:', error);
         } finally {
             setLoading(false);
+        }
+    }
+
+    async function fetchVisitCount() {
+        try {
+            const res = await fetch('/api/visit');
+            if (res.ok) {
+                const data = await res.json();
+                setVisitCount(data.count);
+            }
+        } catch (error) {
+            console.error('Error fetching visit count:', error);
         }
     }
 
@@ -107,6 +121,9 @@ export default function AdminPanel() {
                     <div className="flex justify-between items-center mb-8">
                         <h1 className="font-heading text-3xl font-bold text-gray-900">Admin Dashboard</h1>
                         <div className="flex items-center gap-4">
+                            <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200 text-sm font-medium text-blue-600">
+                                Total Visits: {visitCount}
+                            </div>
                             <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200 text-sm font-medium text-gray-600">
                                 Total Registrations: {students.length}
                             </div>
