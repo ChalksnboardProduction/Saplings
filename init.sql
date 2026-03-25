@@ -8,3 +8,11 @@ CREATE TABLE IF NOT EXISTS students (
   email TEXT NOT NULL,
   address TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS site_stats (
+  id SERIAL PRIMARY KEY,
+  key TEXT UNIQUE NOT NULL,
+  value BIGINT DEFAULT 0
+);
+
+INSERT INTO site_stats (key, value) VALUES ('home_visits', 0) ON CONFLICT (key) DO NOTHING;

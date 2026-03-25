@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Header from "@/components/Header";
 
@@ -20,6 +20,17 @@ export default function Home() {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
+
+  useEffect(() => {
+    const incrementVisit = async () => {
+      try {
+        await fetch("/api/visit", { method: "POST" });
+      } catch (error) {
+        console.error("Failed to increment visit:", error);
+      }
+    };
+    incrementVisit();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -104,9 +115,8 @@ export default function Home() {
       <main className="flex-grow py-12 px-4 sm:px-6 w-full max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
 
-          {/* Left Side - Video */}
           {/* Left Side - Admission Text */}
-          <div className="flex flex-col h-full pt-0">
+          <div className="flex flex-col h-full pt-0 order-2 lg:order-1">
             <div className="space-y-4 text-gray-700 leading-relaxed text-sm lg:text-base text-justify">
               <h2 className="text-3xl font-bold text-[#081349] mb-4">Admission Process</h2>
               <p>
@@ -132,7 +142,7 @@ export default function Home() {
           </div>
 
           {/* Right Side - Form */}
-          <div className="w-full">
+          <div className="w-full order-1 lg:order-2">
             <div className="bg-[#081349] rounded-2xl p-6 sm:p-12 shadow-xl border border-gray-100">
 
 
